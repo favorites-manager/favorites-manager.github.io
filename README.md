@@ -1,0 +1,1 @@
+# favorites-manager.github.io
