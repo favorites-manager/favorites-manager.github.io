@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<link rel="stylesheet" href="main.css">
+		<title>Favorites Manager</title>
+
+		<link rel="stylesheet" type="text/css" href="main.css">
+
+		<script src="media.js"></script>
+		<script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+	</head>
+	<body id="body">
+		<header>
+			<label for="search">🔍</label>
+			<input type="text" id="search" name="search" v-model="searchInput" placeholder="dogs">
+		</header>
+		<main>
+			<a v-for="media in filteredMedia" :href="`https://www.tiktok.com/@favorites-manager/video/${media}`" target="_blank">
+				<img :src="`liked/${media}.jpg`">
+			</a>
+		</main>
+
+		<script>
+			const { createApp } = Vue
+
+			createApp({
+				data() {
+					// Get list of liked videos and tags
+					fetch('https://favorites-manager.github.io/liked_vids.csv')
+						.then(response => response.text())
+						.then(csvData => {
+							lines = csvData.split('\r\n')
+							this.likedMedia = []
+							for (let line of lines) {
+								this.likedMedia.push(line.split(','))
+							}
+						})
+
+					return {
+						searchInput: '',
+						likedMedia: []
+					}
+				},
+				computed: {
+					filteredMedia() {
+						let selectedMedia = []
+						let searchWords = this.searchInput.split(',')
+						if (searchWords[0].length > 0) {
+							for (let media of this.likedMedia) {
+								let numMatches = 0
+								for (let tag of media.slice(1)) {
+									for (let keyword of searchWords) {
+										if (tag.includes(keyword)) {
+											numMatches++
+											break
+										}
+									}
+								}
+								if (numMatches > 0) {
+									selectedMedia.push(media[0])
+								}
+							}
+						}
+						return selectedMedia
+					}
+				}
+			}).mount('#body')
+		</script>
+	</body>
+</html>
