@@ -8,7 +8,6 @@
 
 		<link rel="stylesheet" type="text/css" href="main.css">
 
-		<script src="media.js"></script>
 		<script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
 	</head>
 	<body id="body">
@@ -46,11 +45,11 @@
 				computed: {
 					filteredMedia() {
 						let selectedMedia = []
-						let searchWords = this.searchInput.split(',')
+						let searchWords = this.searchInput.split(',').map(word => word.toLowerCase().trim())
 						if (searchWords[0].length > 0) {
 							for (let media of this.likedMedia) {
 								let numMatches = 0
-								for (let tag of media.slice(1)) {
+								for (let tag of media.slice(1).map(word => word.toLowerCase().trim())) {
 									for (let keyword of searchWords) {
 										if (tag.includes(keyword)) {
 											numMatches++
