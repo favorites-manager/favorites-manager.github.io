@@ -16,6 +16,7 @@
 			<input type="text" id="search" name="search" v-model="searchInput" placeholder="dogs">
 		</header>
 		<main>
+			<p v-if="searchInput && filteredMedia.length==0">No results found</p>
 			<a v-for="media in filteredMedia" :href="`https://www.tiktok.com/@favorites-manager/video/${media}`" target="_blank">
 				<img :src="`liked/${media}.jpg`">
 			</a>
@@ -26,7 +27,7 @@
 
 			createApp({
 				data() {
-					// Get list of liked videos and tags
+					// Get list of liked media and tags
 					fetch('https://favorites-manager.github.io/liked_vids.csv')
 						.then(response => response.text())
 						.then(csvData => {
@@ -43,11 +44,17 @@
 					}
 				},
 				computed: {
+					// Filter all liked media using search input tags
 					filteredMedia() {
 						let selectedMedia = []
+						let scores = []
 						let searchWords = this.searchInput.split(',').map(word => word.toLowerCase().trim())
 						if (searchWords[0].length > 0) {
+							
+							// For each liked media
 							for (let media of this.likedMedia) {
+
+								// Count the number of associated tags that match search terms
 								let numMatches = 0
 								for (let tag of media.slice(1).map(word => word.toLowerCase().trim())) {
 									for (let keyword of searchWords) {
@@ -57,12 +64,20 @@
 										}
 									}
 								}
+
+								// Record the media as matching and the number of matched tags as the "score"
 								if (numMatches > 0) {
 									selectedMedia.push(media[0])
+									scores.push(numMatches)
 								}
 							}
 						}
-						return selectedMedia
+
+						// Sort the selected media using their scores
+						let indexedScores = scores.map((value, index) => [value, index])
+						indexedScores.sort((a, b) => b[0] - a[0])
+						let sortedScoresIndices = indexedScores.map(item => item[1])
+						return sortedScoresIndices.map(index => selectedMedia[index])
 					}
 				}
 			}).mount('#body')
