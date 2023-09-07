@@ -17,8 +17,9 @@
 		</header>
 		<main>
 			<p v-if="searchInput && filteredMedia.length==0">No results found</p>
-			<a v-for="media in filteredMedia" :href="`https://www.tiktok.com/@favorites-manager/video/${media}`" target="_blank">
-				<img :src="`liked/${media}.jpg`">
+			<a v-for="media in filteredMedia" :href="media[2]" target="_blank">
+				<img v-if="media[0]==='tiktok'" :src="`liked/${media[1]}.jpg`">
+				<img v-else src="error.jpg">
 			</a>
 		</main>
 
@@ -56,7 +57,7 @@
 
 								// Count the number of associated tags that match search terms
 								let numMatches = 0
-								for (let tag of media.slice(1).map(word => word.toLowerCase().trim())) {
+								for (let tag of media.slice(3).map(word => word.toLowerCase().trim())) {
 									for (let keyword of searchWords) {
 										if (tag.includes(keyword)) {
 											numMatches++
@@ -67,7 +68,7 @@
 
 								// Record the media as matching and the number of matched tags as the "score"
 								if (numMatches > 0) {
-									selectedMedia.push(media[0])
+									selectedMedia.push(media.slice(0,3))
 									scores.push(numMatches)
 								}
 							}
