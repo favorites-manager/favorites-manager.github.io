@@ -23,7 +23,7 @@ with open(HTML, 'r') as html:
 os.makedirs(NEW_THUMBNAILS_DIR, exist_ok=True)
 
 # Get every liked video and its corresponding thumbnail from the saved HTML file
-regex = r'<a href="(https://www.tiktok.com/@.+?/video/\d+?)".+?src="[^/]+?/(.+?\.jpeg)".+?href="\1"'
+regex = r'<a href="(https://www.tiktok.com/@.+?/video/\d+?)".+?src="[^/]+?/([^/]+?\.jpeg)".+?href="\1"'
 firstFlag = True
 with open('new_liked.csv', 'w') as f:
 	writer = csv.writer(f)
