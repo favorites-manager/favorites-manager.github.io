@@ -17,8 +17,9 @@
 		</header>
 		<main>
 			<p v-if="searchInput && filteredMedia.length==0">No results found</p>
-			<a v-for="media in filteredMedia" :href="media[2]" target="_blank">
-				<img v-if="media[0]==='tiktok'" :src="`liked/${media[1]}.jpg`">
+			<p v-else-if="filteredMedia.length==0">Type comma-separated tags into the search bar to see matching videos here</p>
+			<a v-for="media in filteredMedia" :href="media.url" target="_blank">
+				<img v-if="media.platform==='tiktok'" :src="`liked/${media.id}.jpg`" :title="media.tags.join()">
 				<img v-else src="error.jpg">
 			</a>
 		</main>
@@ -29,14 +30,10 @@
 			createApp({
 				data() {
 					// Get list of liked media and tags
-					fetch('https://favorites-manager.github.io/liked_vids.csv')
-						.then(response => response.text())
-						.then(csvData => {
-							lines = csvData.split('\r\n')
-							this.likedMedia = []
-							for (let line of lines) {
-								this.likedMedia.push(line.split(','))
-							}
+					fetch('https://favorites-manager.github.io/liked_vids.json')
+						.then(response => response.json())
+						.then(jsonData => {
+							this.likedMedia = jsonData
 						})
 
 					return {
@@ -50,35 +47,40 @@
 						let selectedMedia = []
 						let scores = []
 						let searchWords = this.searchInput.split(',').map(word => word.toLowerCase().trim())
-						if (searchWords[0].length > 0) {
-							
-							// For each liked media
-							for (let media of this.likedMedia) {
+						searchWords = searchWords.filter(item => item !== '')
+						if (searchWords.length > 0) {
+							if (searchWords[0].length > 0) {
+								
+								// For each liked media
+								for (let media of this.likedMedia) {
 
-								// Count the number of associated tags that match search terms
-								let numMatches = 0
-								for (let tag of media.slice(3).map(word => word.toLowerCase().trim())) {
-									for (let keyword of searchWords) {
-										if (tag.includes(keyword)) {
-											numMatches++
-											break
+									// Count the number of associated tags that match search terms
+									let numMatches = 0
+									for (let tag of media.tags.map(word => word.toLowerCase().trim())) {
+										for (let keyword of searchWords) {
+											if (tag.includes(keyword)) {
+												numMatches++
+												break
+											}
 										}
 									}
-								}
 
-								// Record the media as matching and the number of matched tags as the "score"
-								if (numMatches > 0) {
-									selectedMedia.push(media.slice(0,3))
-									scores.push(numMatches)
+									// Record the media as matching and the number of matched tags as the "score"
+									if (numMatches > 0) {
+										// media.score = numMatches
+										selectedMedia.push(media)
+										scores.push(numMatches)
+									}
 								}
 							}
-						}
 
-						// Sort the selected media using their scores
-						let indexedScores = scores.map((value, index) => [value, index])
-						indexedScores.sort((a, b) => b[0] - a[0])
-						let sortedScoresIndices = indexedScores.map(item => item[1])
-						return sortedScoresIndices.map(index => selectedMedia[index])
+							// Sort the selected media using their scores
+							let indexedScores = scores.map((value, index) => [value, index])
+							indexedScores.sort((a, b) => b[0] - a[0])
+							let sortedScoresIndices = indexedScores.map(item => item[1])
+							return sortedScoresIndices.map(index => selectedMedia[index])
+						}
+						return []
 					}
 				}
 			}).mount('#body')
