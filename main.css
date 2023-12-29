@@ -2,6 +2,7 @@ main {
     display: flex;
     flex-flow: row wrap;
     justify-content: space-evenly;
+    align-items: center;
 }
 
 header {
@@ -15,4 +16,5 @@ header label {
 main img {
     width: 3cm;
     margin: 2px;
+    max-height: 5.33cm;
 }

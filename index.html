@@ -19,7 +19,7 @@
 		<main>
 			<p v-if="searchInput && filteredMedia.length==0">No results found</p>
 			<p v-else-if="filteredMedia.length==0">Type comma-separated tags into the search bar to see matching videos here</p>
-			<a v-for="media in filteredMedia" :href="media.url ? media.url : '#'" target="_blank">
+			<a v-for="media in filteredMedia" :href="media.url ? media.url : `liked/${media.id}`" target="_blank">
 				<img v-if="media.platform==='tiktok'" :src="`liked/${media.id}.jpg`" :title="media.tags.join()">
 				<img v-else-if="media.platform==='twitter'" :src="`liked/${media.id}`" :title="media.tags.join()">
 				<img v-else src="error.jpg">
@@ -68,8 +68,8 @@
 
 									// Count the number of associated tags that match search terms
 									let numMatches = 0
-									for (let tag of media.tags.map(word => word.toLowerCase().trim())) {
-										for (let keyword of searchWords) {
+									for (let keyword of searchWords) {
+										for (let tag of media.tags.map(word => word.toLowerCase().trim())) {
 											if (tag.includes(keyword)) {
 												numMatches++
 												break
