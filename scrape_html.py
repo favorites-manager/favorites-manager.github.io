@@ -12,7 +12,7 @@ NEW_THUMBNAILS_DIR = 'new_liked'
 already_liked_ids = []
 with open(CURRENT_LIKED_MEDIA_FN, 'r') as f:
 	already_liked = json.load(f)
-	already_liked_ids = [media['id'] for media in already_liked]
+	already_liked_ids = [media['id'] for media in filter(lambda m: 'id' in m, already_liked)]
 
 # Extract the HTML file into a single string
 lines = ''
