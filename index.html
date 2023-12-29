@@ -22,6 +22,10 @@
 			<a v-for="media in filteredMedia" :href="media.url ? media.url : `liked/${media.id}`" target="_blank">
 				<img v-if="media.platform==='tiktok'" :src="`liked/${media.id}.jpg`" :title="media.tags.join()">
 				<img v-else-if="media.platform==='twitter'" :src="`liked/${media.id}`" :title="media.tags.join()">
+				<img v-else-if="media.platform==='reddit' && media.type==='img'" :src="`liked/${media.id}`" :title="media.tags.join()">
+				<video v-else-if="media.platform==='reddit' && media.type==='video'" controls>
+					<source :src="`liked/${media.id}`" :type="`video/${media.extension}`">
+				</video>
 				<img v-else src="error.jpg">
 			</a>
 		</main>
