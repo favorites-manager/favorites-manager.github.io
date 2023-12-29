@@ -12,8 +12,9 @@
 	</head>
 	<body id="body">
 		<header>
-			<label for="search">🔍</label>
-			<input type="text" id="search" name="search" v-model="searchInput" placeholder="dogs">
+			<!-- <label for="search">🔍</label> -->
+			<input type="text" id="search" name="search" placeholder="dogs">
+			<input type="button" id="searchButton" value="🔍">
 		</header>
 		<main>
 			<p v-if="searchInput && filteredMedia.length==0">No results found</p>
@@ -40,6 +41,16 @@
 						searchInput: '',
 						likedMedia: []
 					}
+				},
+				mounted() {
+					document.getElementById('searchButton').addEventListener('click', () => {
+						this.searchInput = document.getElementById('search').value
+					})
+					document.getElementById('search').addEventListener('keyup', (e) => {
+						if (e.keyCode === 13) {
+							this.searchInput = document.getElementById('search').value
+						}
+					})
 				},
 				computed: {
 					// Filter all liked media using search input tags
