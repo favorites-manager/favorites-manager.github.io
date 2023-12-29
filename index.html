@@ -12,7 +12,6 @@
 	</head>
 	<body id="body">
 		<header>
-			<!-- <label for="search">🔍</label> -->
 			<input type="text" id="search" name="search" placeholder="dogs">
 			<input type="button" id="searchButton" value="🔍">
 		</header>
@@ -26,6 +25,7 @@
 				<video v-else-if="media.platform==='reddit' && media.type==='video'" class="item">
 					<source :src="`liked/${media.id}`" class="item":type="`video/${media.extension}`">
 				</video>
+				<img v-else-if="media.platform==='generic'" class="item" :src="media.img" :title="media.tags.join()">
 				<img v-else class="item" src="error.jpg">
 			</a>
 			<div v-if="searchInput.includes(',')" class="item">
