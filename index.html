@@ -20,14 +20,18 @@
 			<p v-if="searchInput && filteredMedia.length==0">No results found</p>
 			<p v-else-if="filteredMedia.length==0">Type comma-separated tags into the search bar to see matching videos here</p>
 			<a v-for="media in filteredMedia" :href="media.url ? media.url : `liked/${media.id}`" target="_blank">
-				<img v-if="media.platform==='tiktok'" :src="`liked/${media.id}.jpg`" :title="media.tags.join()">
-				<img v-else-if="media.platform==='twitter'" :src="`liked/${media.id}`" :title="media.tags.join()">
-				<img v-else-if="media.platform==='reddit' && media.type==='img'" :src="`liked/${media.id}`" :title="media.tags.join()">
-				<video v-else-if="media.platform==='reddit' && media.type==='video'" controls>
-					<source :src="`liked/${media.id}`" :type="`video/${media.extension}`">
+				<img v-if="media.platform==='tiktok'" class="item" :src="`liked/${media.id}.jpg`" :title="media.tags.join()">
+				<img v-else-if="media.platform==='twitter'" class="item" :src="`liked/${media.id}`" :title="media.tags.join()">
+				<img v-else-if="media.platform==='reddit' && media.type==='img'" class="item" :src="`liked/${media.id}`" :title="media.tags.join()">
+				<video v-else-if="media.platform==='reddit' && media.type==='video'" class="item">
+					<source :src="`liked/${media.id}`" class="item":type="`video/${media.extension}`">
 				</video>
-				<img v-else src="error.jpg">
+				<img v-else class="item" src="error.jpg">
 			</a>
+			<div v-if="searchInput.includes(',')" class="item">
+				<input type="checkbox" id="more" name="more" v-model="displayPartialMatches"><br>
+				<label for="more">Display Partial Matches</label>
+			</div>
 		</main>
 
 		<script>
@@ -44,7 +48,8 @@
 
 					return {
 						searchInput: '',
-						likedMedia: []
+						likedMedia: [],
+						displayPartialMatches: false,
 					}
 				},
 				mounted() {
@@ -82,8 +87,7 @@
 									}
 
 									// Record the media as matching and the number of matched tags as the "score"
-									if (numMatches > 0) {
-										// media.score = numMatches
+									if ((this.displayPartialMatches && numMatches>0) || (!this.displayPartialMatches && numMatches==searchWords.length)) {
 										selectedMedia.push(media)
 										scores.push(numMatches)
 									}

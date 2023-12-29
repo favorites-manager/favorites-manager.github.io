@@ -13,8 +13,9 @@ header label {
     margin-right: 0.5em;
 }
 
-main img, main video {
+.item {
     width: 3cm;
     margin: 2px;
     max-height: 5.33cm;
+    text-align: center;
 }
