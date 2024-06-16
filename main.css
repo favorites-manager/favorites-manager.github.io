@@ -1,21 +1,28 @@
 main {
-    display: flex;
-    flex-flow: row wrap;
-    justify-content: space-evenly;
-    align-items: center;
+	display: flex;
+	flex-flow: row wrap;
+	justify-content: space-evenly;
+	align-items: center;
 }
 
 header {
-    margin: 4px;
+	margin: 4px;
 }
 
 header label {
-    margin-right: 0.5em;
+	margin-right: 0.5em;
 }
 
 .item {
-    width: 3cm;
-    margin: 2px;
-    max-height: 5.33cm;
-    text-align: center;
+	width: 3cm;
+	margin: 2px;
+	max-height: 5.33cm;
+	text-align: center;
+}
+
+@media (prefers-color-scheme: dark) {
+	body {
+		background-color: black;
+		color: white;
+	}
 }
